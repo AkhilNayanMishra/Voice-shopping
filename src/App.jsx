@@ -10,7 +10,7 @@ try {
   db = getFirestore(app);
 } catch (e) { console.warn("Firebase not initialized."); }
 
-const CATEGORY_MAP = { milk: "Dairy", cheese: "Dairy", bread: "Bakery", butter: "Dairy", apple: "Produce", banana: "Produce", orange: "Produce", mango: "Produce", strawberry: "Produce", water: "Beverages", toothpaste: "Personal Care", cereal: "Pantry", leche: "Dairy", pan: "Bakery", manzana: "Produce", सेब: "Produce", दूध: "Dairy", सब: "Produce" };
+const CATEGORY_MAP = { milk: "Dairy", cheese: "Dairy", bread: "Bakery", butter: "Dairy", apple: "Produce", banana: "Produce", orange: "Produce", mango: "Produce", strawberry: "Produce", water: "Beverages", toothpaste: "Personal Care", cereal: "Pantry", leche: "Dairy", pan: "Bakery", manzana: "Produce", सेब: "Produce", दूध: "Dairy", सब: "Produce", pal: "Produce" };
 const SUBSTITUTES = { milk: ["almond milk", "soy milk", "oat milk"], sugar: ["honey", "stevia"] };
 const SEASONAL = { [new Date().getMonth()]: "peaches" };
 const NUMBER_WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, ten: 10, uno: 1, dos: 2, tres: 3, एक: 1, दो: 2, तीन: 3 };
@@ -24,7 +24,7 @@ const KEYWORDS = {
     NAVIGATE_LIST: ['show my list', 'go back', 'back to list'],
   },
   'hi': {
-    ADD: ['चाहिए', 'जोड़ें', 'खरीदना', 'लेना'],
+    ADD: ['चाहिए', 'जोड़ें', 'जोड़ो', 'खरीदना', 'लेना'],
     REMOVE: ['हटाएं', 'निकालें', 'हटा दो', 'हटाओ'],
     SEARCH: ['खोजें', 'ढूंढो'],
     NAVIGATE_LIST: ['मेरी सूची दिखाओ', 'वापस'],
@@ -37,7 +37,7 @@ const PRODUCT_DATABASE = [
 
 function normalize(str) {
   let s = str.toLowerCase().trim();
-  if (s === 'सब') { s = 'सेब'; }
+  if (s === 'सब' || s === 'सेफ' || s === 'pal') { s = 'सेब'; }
   if (s.endsWith('es')) { return s.slice(0, -2); }
   if (s.endsWith('s')) { return s.slice(0, -1); }
   return s;
@@ -157,18 +157,30 @@ export default function App() {
     }
   }
 
-  function parseEntities(textFragment, langCode) {
+  function parseEnglishEntities(textFragment) {
     let name = textFragment.trim();
     let qty = 1;
-    const stopWords = {
-      'en': ['i', 'a', 'an', 'the', 'some', 'to', 'my', 'list', 'please', ...KEYWORDS.en.ADD, ...KEYWORDS.en.REMOVE],
-      'hi': ['मुझे', 'कृपया', ...KEYWORDS.hi.ADD, ...KEYWORDS.hi.REMOVE]
-    };
-    if (stopWords[langCode]) {
-      stopWords[langCode].forEach(word => {
-        name = name.replace(new RegExp(`\\b${word}\\b`, 'g'), '').trim();
-      });
+    const stopWords = ['i', 'a', 'an', 'the', 'some', 'to', 'my', 'list', 'please', ...KEYWORDS.en.ADD, ...KEYWORDS.en.REMOVE];
+    stopWords.forEach(word => {
+      name = name.replace(new RegExp(`\\b${word}\\b`, 'g'), '').trim();
+    });
+    const numRegex = new RegExp(`(\\d+|${Object.keys(NUMBER_WORDS).join('|')})`);
+    const match = name.match(numRegex);
+    if (match) {
+      const numWord = match[0];
+      qty = NUMBER_WORDS[numWord] || parseInt(numWord, 10) || 1;
+      name = name.replace(numRegex, '').trim();
     }
+    return { qty, name: name.replace(/\s\s+/g, ' ').trim() };
+  }
+
+  function parseHindiEntities(textFragment) {
+    let name = textFragment.trim();
+    let qty = 1;
+    const stopWords = ['मुझे', 'कृपया', ...KEYWORDS.hi.ADD, ...KEYWORDS.hi.REMOVE];
+    stopWords.forEach(word => {
+      name = name.replace(new RegExp(word, 'g'), '').trim();
+    });
     const numRegex = new RegExp(`(\\d+|${Object.keys(NUMBER_WORDS).join('|')})`);
     const match = name.match(numRegex);
     if (match) {
@@ -190,7 +202,12 @@ export default function App() {
       for (const keyword of intent.keywords) {
         if (txt.includes(keyword)) {
           const remainder = txt;
-          let entities = parseEntities(remainder, langCode);
+          let entities;
+          if (langCode === 'hi') {
+            entities = parseHindiEntities(remainder);
+          } else {
+            entities = parseEnglishEntities(remainder);
+          }
           if (intent.intent === 'SEARCH') {
             entities.query = remainder.replace(new RegExp(keyword, 'g'), "").trim();
           }
@@ -210,7 +227,6 @@ export default function App() {
       case 'REMOVE':
         const match = items.find(it => normalize(it.name) === normalize(result.entities.name));
         if (match) {
-          // This was the missing line of code
           processRemoveIntent(match, result.entities.qty);
         } else {
           alert(`Could not find "${result.entities.name}" in your list.`);
@@ -246,8 +262,9 @@ export default function App() {
   }
 
   function handleManualAdd() {
-    const {qty, name} = parseEntities(input, language.split('-')[0]);
-    addItem(name, qty);
+    const langCode = language.split('-')[0];
+    const entities = langCode === 'hi' ? parseHindiEntities(input) : parseEnglishEntities(input);
+    addItem(entities.name, entities.qty);
   }
   
   const renderSuggestions = () => { return suggestions.length === 0 ? <div className="text-gray-500 text-sm">Suggestions will appear here.</div> : suggestions.map((s, i) => (<div key={i} className="flex justify-between items-center p-2 border bg-gray-50 rounded mb-2 text-sm"><span>{s.type === 'history' && <span>🤔 Running low on <b>{s.item}</b>?</span>}{s.type === 'substitute' && <span>🥛 For <b>{s.for}</b>, you could also try: {s.options.join(', ')}.</span>}{s.type === 'seasonal' && <span>☀️ <b>{s.item.charAt(0).toUpperCase() + s.item.slice(1)}</b> is in season!</span>}{s.type === 'paired' && <span>🤝 Goes well with {s.with}: <b>{s.item}</b></span>}</span>{s.item && <button onClick={() => addItem(s.item, 1)} className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded hover:bg-green-600">Add</button>}</div>));}
