@@ -160,27 +160,22 @@ export default function App() {
   function parseEntities(textFragment, langCode) {
     let name = textFragment.trim();
     let qty = 1;
-
     const stopWords = {
       'en': ['i', 'a', 'an', 'the', 'some', 'to', 'my', 'list', 'please', ...KEYWORDS.en.ADD, ...KEYWORDS.en.REMOVE],
       'hi': ['मुझे', 'कृपया', ...KEYWORDS.hi.ADD, ...KEYWORDS.hi.REMOVE]
     };
-
     if (stopWords[langCode]) {
       stopWords[langCode].forEach(word => {
         name = name.replace(new RegExp(`\\b${word}\\b`, 'g'), '').trim();
       });
     }
-
     const numRegex = new RegExp(`(\\d+|${Object.keys(NUMBER_WORDS).join('|')})`);
     const match = name.match(numRegex);
-    
     if (match) {
       const numWord = match[0];
       qty = NUMBER_WORDS[numWord] || parseInt(numWord, 10) || 1;
       name = name.replace(numRegex, '').trim();
     }
-    
     return { qty, name: name.replace(/\s\s+/g, ' ').trim() };
   }
 
@@ -215,6 +210,8 @@ export default function App() {
       case 'REMOVE':
         const match = items.find(it => normalize(it.name) === normalize(result.entities.name));
         if (match) {
+          // This was the missing line of code
+          processRemoveIntent(match, result.entities.qty);
         } else {
           alert(`Could not find "${result.entities.name}" in your list.`);
         }
