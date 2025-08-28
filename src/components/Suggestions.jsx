@@ -7,10 +7,10 @@ const Suggestions = ({ suggestions, addItem, dismissSuggestion }) => {
 
   const renderSuggestionText = (s) => {
     switch (s.type) {
-      case 'history': return <span>🤔 Running low on <b>{s.item}</b>?</span>;
-      case 'substitute': return <span>🥛 For <b>{s.for}</b>, you could also try: {s.options.join(', ')}.</span>;
-      case 'seasonal': return <span>☀️ <b>{s.item.charAt(0).toUpperCase() + s.item.slice(1)}</b> is in season!</span>;
-      case 'paired': return <span>🤝 Goes well with {s.with}: <b>{s.item}</b></span>;
+      case 'history': return <span> Running low on <b>{s.item}</b>?</span>;
+      case 'substitute': return <span>For <b>{s.for}</b>, you could also try: {s.options.join(', ')}.</span>;
+      case 'seasonal': return <span> <b>{s.item.charAt(0).toUpperCase() + s.item.slice(1)}</b> is in season!</span>;
+      case 'paired': return <span> Goes well with {s.with}: <b>{s.item}</b></span>;
       default: return null;
     }
   };

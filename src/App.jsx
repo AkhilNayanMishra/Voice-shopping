@@ -9,6 +9,8 @@ import Controls from './components/Controls';
 import ShoppingList from './components/ShoppingList';
 import SearchResults from './components/SearchResults';
 
+import { motion, AnimatePresence } from "framer-motion";
+
 export default function App() {
   const [items, setItems] = useState([]);
   const [input, setInput] = useState("");
@@ -178,17 +180,27 @@ export default function App() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 font-sans p-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-white to-blue-100 flex items-center justify-center p-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-4xl w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/40 overflow-hidden"
+      >
         {/* App Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white rounded-t-2xl shadow-md">
+        <div className="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 p-8 text-center text-white shadow-lg">
           <Header />
         </div>
 
         {/* Main Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-8 space-y-8">
           {/* Controls */}
-          <div className="bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
+          >
             <Controls
               input={input}
               setInput={setInput}
@@ -198,25 +210,43 @@ export default function App() {
               language={language}
               setLanguage={setLanguage}
             />
-          </div>
+          </motion.div>
 
-          {/* Conditional Render */}
-          <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100">
+          {/* Search / Shopping List */}
+          <AnimatePresence mode="wait">
             {isSearching ? (
-              <SearchResults searchResults={searchResults} setIsSearching={setIsSearching} addItem={addItem} />
+              <motion.div
+                key="search"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-2xl shadow-lg border border-gray-200"
+              >
+                <SearchResults searchResults={searchResults} setIsSearching={setIsSearching} addItem={addItem} />
+              </motion.div>
             ) : (
-              <ShoppingList
-                items={items}
-                loading={loading}
-                processRemoveIntent={processRemoveIntent}
-                suggestions={suggestions}
-                addItem={addItem}
-                dismissSuggestion={dismissSuggestion}
-              />
+              <motion.div
+                key="list"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="bg-gradient-to-r from-yellow-50 to-pink-50 p-6 rounded-2xl shadow-lg border border-gray-200"
+              >
+                <ShoppingList
+                  items={items}
+                  loading={loading}
+                  processRemoveIntent={processRemoveIntent}
+                  suggestions={suggestions}
+                  addItem={addItem}
+                  dismissSuggestion={dismissSuggestion}
+                />
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
