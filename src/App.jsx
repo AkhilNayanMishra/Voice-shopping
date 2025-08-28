@@ -19,7 +19,6 @@ export default function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
 
-  // Fetch/subscribe to data from Firestore or local storage
   useEffect(() => {
     if (!db) {
       const localItems = JSON.parse(localStorage.getItem("shoppingList") || "[]");
@@ -36,7 +35,6 @@ export default function App() {
     return () => unsub();
   }, []);
 
-  // Compute suggestions and save to local storage when items change
   useEffect(() => {
     if (!db) {
       localStorage.setItem("shoppingList", JSON.stringify(items));
@@ -142,7 +140,6 @@ export default function App() {
   };
 
   const handleTranscript = useCallback((transcript) => {
-    // Corrected: processNLP no longer needs the 'language' argument
     const result = processNLP(transcript);
     switch (result.intent) {
       case 'ADD':
@@ -167,7 +164,6 @@ export default function App() {
           addItem(transcript, 1);
         }
     }
-    // Corrected: Removed 'language' from the dependency array as it's no longer used
   }, [items]);
 
   const { listening, toggleListening } = useVoiceRecognition({ onTranscript: handleTranscript, language });
@@ -182,30 +178,44 @@ export default function App() {
   };
   
   return (
-    <div className="min-h-screen bg-gray-100 font-sans p-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6">
-        <Header />
-        <Controls
-          input={input}
-          setInput={setInput}
-          handleManualAdd={handleManualAdd}
-          listening={listening}
-          toggleListening={toggleListening}
-          language={language}
-          setLanguage={setLanguage}
-        />
-        {isSearching ? (
-          <SearchResults searchResults={searchResults} setIsSearching={setIsSearching} addItem={addItem} />
-        ) : (
-          <ShoppingList
-            items={items}
-            loading={loading}
-            processRemoveIntent={processRemoveIntent}
-            suggestions={suggestions}
-            addItem={addItem}
-            dismissSuggestion={dismissSuggestion}
-          />
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 font-sans p-6">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+        {/* App Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white rounded-t-2xl shadow-md">
+          <Header />
+        </div>
+
+        {/* Main Content */}
+        <div className="p-6 space-y-6">
+          {/* Controls */}
+          <div className="bg-gray-50 p-4 rounded-xl shadow-sm border border-gray-200">
+            <Controls
+              input={input}
+              setInput={setInput}
+              handleManualAdd={handleManualAdd}
+              listening={listening}
+              toggleListening={toggleListening}
+              language={language}
+              setLanguage={setLanguage}
+            />
+          </div>
+
+          {/* Conditional Render */}
+          <div className="bg-white p-4 rounded-xl shadow-md border border-gray-100">
+            {isSearching ? (
+              <SearchResults searchResults={searchResults} setIsSearching={setIsSearching} addItem={addItem} />
+            ) : (
+              <ShoppingList
+                items={items}
+                loading={loading}
+                processRemoveIntent={processRemoveIntent}
+                suggestions={suggestions}
+                addItem={addItem}
+                dismissSuggestion={dismissSuggestion}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
