@@ -180,15 +180,15 @@ export default function App() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-white to-blue-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex items-center justify-center p-6">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-4xl w-full bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/40 overflow-hidden"
+        className="max-w-4xl w-full backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/30 overflow-hidden"
       >
         {/* App Header */}
-        <div className="bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 p-8 text-center text-white shadow-lg">
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-center">
           <Header />
         </div>
 
@@ -199,7 +199,7 @@ export default function App() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
+            className="bg-white/60 p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
           >
             <Controls
               input={input}
@@ -221,7 +221,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-2xl shadow-lg border border-gray-200"
+                className="bg-white/70 p-6 rounded-2xl shadow-lg border border-gray-200"
               >
                 <SearchResults searchResults={searchResults} setIsSearching={setIsSearching} addItem={addItem} />
               </motion.div>
@@ -232,7 +232,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className="bg-gradient-to-r from-yellow-50 to-pink-50 p-6 rounded-2xl shadow-lg border border-gray-200"
+                className="bg-white/70 p-6 rounded-2xl shadow-lg border border-gray-200"
               >
                 <ShoppingList
                   items={items}
