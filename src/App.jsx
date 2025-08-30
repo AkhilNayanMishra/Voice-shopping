@@ -185,7 +185,7 @@ export default function App() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl w-full bg-white/80 rounded-3xl shadow-2xl border-2 border-indigo-100 overflow-hidden"
+        className="w-full sm:max-w-3xl bg-white/80 rounded-3xl shadow-2xl border-2 border-indigo-100 overflow-hidden"
       >
         {/* App Header */}
         <div className="bg-gradient-to-r from-indigo-600 to-pink-500 p-8 text-center relative">
