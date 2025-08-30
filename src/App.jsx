@@ -3,7 +3,7 @@ import { db, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, upd
 import { processNLP, normalize, categorizeItem, getHistory, addToHistory, parseManualInput } from './services/nlp';
 import { PRODUCT_DATABASE, SUBSTITUTES, PAIRED_ITEMS, SEASONAL } from './data/database';
 import { useVoiceRecognition } from './hooks/useVoiceRecognition';
-
+import './index.css'; 
 import Header from './components/Header';
 import Controls from './components/Controls';
 import ShoppingList from './components/ShoppingList';
@@ -180,26 +180,27 @@ export default function App() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-indigo-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-pink-50 to-purple-100 flex items-center justify-center p-4">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-4xl w-full backdrop-blur-xl bg-white/70 rounded-3xl shadow-2xl border border-white/30 overflow-hidden"
+        className="max-w-3xl w-full bg-white/80 rounded-3xl shadow-2xl border-2 border-indigo-100 overflow-hidden"
       >
         {/* App Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-center">
+        <div className="bg-gradient-to-r from-indigo-600 to-pink-500 p-8 text-center relative">
           <Header />
+          <p className="text-white/80 mt-2 text-sm tracking-wide">
+            Use commands like "Add apples", "Remove milk", or "Find toothpaste".
+          </p>
         </div>
-
         {/* Main Content */}
         <div className="p-8 space-y-8">
-          {/* Controls */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-white/60 p-6 rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
+            className="bg-white/80 p-6 rounded-2xl shadow-md border border-indigo-100 hover:shadow-lg transition"
           >
             <Controls
               input={input}
@@ -211,8 +212,6 @@ export default function App() {
               setLanguage={setLanguage}
             />
           </motion.div>
-
-          {/* Search / Shopping List */}
           <AnimatePresence mode="wait">
             {isSearching ? (
               <motion.div
@@ -221,7 +220,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className="bg-white/70 p-6 rounded-2xl shadow-lg border border-gray-200"
+                className="bg-white/90 p-6 rounded-2xl shadow-lg border border-pink-100"
               >
                 <SearchResults searchResults={searchResults} setIsSearching={setIsSearching} addItem={addItem} />
               </motion.div>
@@ -232,7 +231,7 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className="bg-white/70 p-6 rounded-2xl shadow-lg border border-gray-200"
+                className="bg-white/90 p-6 rounded-2xl shadow-lg border border-indigo-100"
               >
                 <ShoppingList
                   items={items}

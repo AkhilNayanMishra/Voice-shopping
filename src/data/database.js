@@ -2,7 +2,7 @@ export const CATEGORY_MAP = { milk: "Dairy", cheese: "Dairy", bread: "Bakery", b
 
 export const SUBSTITUTES = { milk: ["almond milk", "oat milk", "soy milk"], butter: ["margarine", "olive oil"], sugar: ["honey", "stevia"] };
 
-export const SEASONAL = { 
+export const SEASONAL = {
   0: ["orange", "grapefruit"], 1: ["cabbage", "broccoli"], 2: ["spinach", "peas"], 3: ["strawberry", "asparagus"], 4: ["mango", "cherry", "zucchini"], 5: ["watermelon", "blueberry", "peach"], 6: ["corn", "tomato", "cucumber"], 7: ["peach", "bell pepper"], 8: ["apple", "grape", "pumpkin"], 9: ["sweet potato", "squash"], 10: ["cranberry", "brussels sprout"], 11: ["pomegranate", "kale"]
 };
 
@@ -16,11 +16,9 @@ export const KEYWORDS = {
     REMOVE: ['remove', 'delete', 'get rid of'],
     SEARCH: ['find', 'search for', 'look for'],
     NAVIGATE_LIST: ['show my list', 'go back', 'back to list'],
-  },
-  'hi': {
-    ADD: ['चाहिए', 'जोड़ें', 'जोड़ो', 'खरीदना', 'लेना'],
-    REMOVE: ['हटाएं', 'निकालें', 'हटा दो', 'हटाओ'],
-    SEARCH: ['खोजें', 'ढूंढो'],
+  }, 'hi': {
+    ADD: ['चाहिए', 'जोड़ें', 'जोड़ो', 'खरीदना', 'लेना', 'लाओ', 'डालो', 'और चाहिए'],
+    REMOVE: ['हटाएं', 'निकालें', 'हटा दो', 'हटाओ', 'कम करो'], SEARCH: ['खोजें', 'ढूंढो', 'ढूंढिए', 'पता लगाओ'],
     NAVIGATE_LIST: ['मेरी सूची दिखाओ', 'वापस'],
   }
 };

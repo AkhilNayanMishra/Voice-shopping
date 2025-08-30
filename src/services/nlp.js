@@ -46,8 +46,8 @@ function parseHindiEntities(textFragment) {
   let qty = 1;
   const stopWords = ['मुझे', 'कृपया', ...KEYWORDS.hi.ADD, ...KEYWORDS.hi.REMOVE, ...KEYWORDS.hi.SEARCH, ...KEYWORDS.hi.NAVIGATE_LIST];
   stopWords.forEach(word => {
-    name = name.replace(new RegExp(word, 'g'), '').trim();
-  });
+  name = name.replace(new RegExp(`\\b${word}\\b`, 'g'), '').trim();
+});
   const numRegex = new RegExp(`(\\d+|${Object.keys(NUMBER_WORDS).join('|')})`);
   const match = name.match(numRegex);
   if (match) {
@@ -59,7 +59,7 @@ function parseHindiEntities(textFragment) {
 }
 
 export function processNLP(transcript) {
-    // FIXED: Normalize the transcript to a standard Unicode form.
+ 
     const txt = transcript.normalize('NFC').toLowerCase().trim();
 
     const intentPriority = ['NAVIGATE_LIST', 'REMOVE', 'SEARCH', 'ADD'];
@@ -69,7 +69,7 @@ export function processNLP(transcript) {
             const keywords = KEYWORDS[langCode][intentName] || [];
             
             for (const keyword of keywords) {
-                // FIXED: Also normalize the keyword to ensure a match.
+               
                 if (txt.includes(keyword.normalize('NFC'))) {
                     const detectedLang = langCode;
                     const remainder = txt;
